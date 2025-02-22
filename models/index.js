@@ -16,5 +16,5 @@ Recruiter.hasMany(Review, { foreignKey: "recruiter_ID" });
 CV.hasOne(Review, { foreignKey: "CV_ID" });
 Review.belongsTo(CV, { foreignKey: "CV_ID" });
 
-User.hasMany(CV, { foreignKey: "user_id" });
-CV.belongsTo(User, { foreignKey: "user_id" });
+User.hasMany(CV, { foreignKey: "user_ID" });
+CV.belongsTo(User, { foreignKey: "user_ID" });
