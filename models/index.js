@@ -3,7 +3,8 @@ import CV from "./CV.js";
 import Recruiter from "./Recruiter.js";
 import Review from "./Review.js";
 import Comment from "./Comment.js";
-
+import Session from "./Session.js";
+// Establishing relations
 Review.hasMany(Comment, { foreignKey: "review_ID" });
 Comment.belongsTo(Review, { foreignKey: "review_ID" });
 

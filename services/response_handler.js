@@ -12,6 +12,9 @@ export const successResponse = (res, code, message, data) =>
 export const errorResponse = (res, code, message, data) =>
   sendResponse(res, "error", code, message, data);
 
+export const unAuthorizedResponse = (res, code, message, data) =>
+  sendResponse(res, "unAuthorized", code, message, data);
+
 export const serverSideErrorResponse = (res, error) => {
   console.log(error);
   sendResponse(res, "error", 500, "Something went wrong");
