@@ -1,6 +1,6 @@
 import Session from "../models/Session.js";
 import crypto from "crypto";
-exports.getOrCreateSession = async (userId) => {
+export const getOrCreateSession = async (userId) => {
   let session = await Session.findOne({
     where: {
       user_id: userId,
@@ -14,6 +14,6 @@ exports.getOrCreateSession = async (userId) => {
   return session.session_id;
 };
 
-exports.deleteSession = async (userId) => {
+export const deleteSession = async (userId) => {
   await Session.destroy({ where: { user_id: userId } });
 };
