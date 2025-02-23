@@ -1,7 +1,7 @@
 import connection from "../database/connection.js";
 import { DataTypes } from "sequelize";
 import CV from "./CV.js";
-import Comment from "./comment.js";
+import Comment from "./Comment.js";
 
 const Review = connection().define("Review", {
   ID: {

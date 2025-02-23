@@ -1,7 +1,7 @@
 import connection from "../database/connection.js";
 import { DataTypes } from "sequelize";
 import Review from "./Review.js";
-import User from "./user.js";
+import User from "./User.js";
 
 const Recruiter = connection().define("Recruiter", {
   ID: {
