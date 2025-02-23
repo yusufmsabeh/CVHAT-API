@@ -1,4 +1,4 @@
-import User from "./user.js";
+import User from "./User.js";
 import CV from "./CV.js";
 import Recruiter from "./Recruiter.js";
 import Review from "./Review.js";
