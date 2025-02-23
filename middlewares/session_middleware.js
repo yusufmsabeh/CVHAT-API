@@ -34,7 +34,7 @@ export default async (req, res, next) => {
         401,
         "Not authorized, please try to login",
       );
-    req.user = user;
+    req.model = user;
     return next();
   } catch (e) {
     serverSideErrorResponse(res, e);
