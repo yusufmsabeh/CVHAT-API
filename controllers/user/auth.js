@@ -6,7 +6,11 @@ import {
 } from "../../services/response_handler.js";
 import bcrypt from "bcrypt";
 import validateRequest from "../../services/validate_request.js";
-import { getOrCreateSession } from "../../services/sessions_managment.js";
+import {
+  getOrCreateSession,
+  deleteSession,
+} from "../../services/sessions_managment.js";
+
 export const postSignup = async (req, res) => {
   try {
     if (validateRequest(req, res)) return;
@@ -44,6 +48,15 @@ export const postLogin = async (req, res) => {
       email: user.email,
       token: token,
     });
+  } catch (error) {
+    serverSideErrorResponse(res, error);
+  }
+};
+
+export const postLogout = async (req, res) => {
+  try {
+    await deleteSession(req.model.ID);
+    successResponse(res, 200, "Logged out successfully");
   } catch (error) {
     serverSideErrorResponse(res, error);
   }
