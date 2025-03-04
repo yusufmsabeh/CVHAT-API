@@ -1,5 +1,6 @@
 const sendResponse = (res, status, code, message, data = {}) => {
   try {
+    if (!Array.isArray(message)) message = [message];
     res.status(code).json({ status, code, message, data });
   } catch (error) {
     console.log("Response error: " + error);
