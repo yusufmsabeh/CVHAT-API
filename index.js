@@ -39,7 +39,7 @@ s3Client
       .authenticate()
       .then(() => {
         connection()
-          .sync({ alter: true })
+          .sync()
           .then(() => {
             app.listen(PORT, HOST, () => {
               console.log("Server is running on port", PORT, " host: ", HOST);
