@@ -7,14 +7,19 @@ const CV = connection().define("CV", {
     autoIncrement: true,
     primaryKey: true,
   },
-  URL: {
+  url: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  coverURL: {
+  coverImageUrlHigh: {
     type: DataTypes.STRING,
     allowNull: false,
-    field: "cover_URL",
+    field: "cover_image_url_high",
+  },
+  coverImageUrlLow: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    field: "cover_image_url_low",
   },
 });
 
