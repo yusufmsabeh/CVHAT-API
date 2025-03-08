@@ -1,5 +1,6 @@
 import Session from "../models/Session.js";
 import {
+  errorResponse,
   serverSideErrorResponse,
   unAuthorizedResponse,
 } from "../services/response_handler.js";
@@ -9,12 +10,7 @@ export default async (req, res, next) => {
     const authorizationHeader = req.headers.authorization;
     const token = authorizationHeader?.split(" ")[1];
     const model = req.model;
-    if (!token)
-      return res.status(401).json({
-        status: "unauthorized",
-        code: 401,
-        message: "Not authorized, please try to login",
-      });
+    if (!token) return errorResponse(res, 401, "No token provided");
     const session = await Session.findOne({
       where: {
         session_id: token,
