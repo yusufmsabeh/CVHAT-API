@@ -13,7 +13,6 @@ import {
 
 export const postSignup = async (req, res) => {
   try {
-    if (validateRequest(req, res)) return;
     const { firstName, lastName, email, password } = req.body;
     const user = await req.model.findOne({ where: { email: email } });
     if (user)
@@ -33,7 +32,6 @@ export const postSignup = async (req, res) => {
 
 export const postLogin = async (req, res) => {
   try {
-    if (validateRequest(req, res)) return;
     const { email, password } = req.body;
     const user = await req.model.findOne({
       where: { email: email },
