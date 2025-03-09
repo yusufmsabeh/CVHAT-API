@@ -7,6 +7,8 @@ import CV from "../../models/CV.js";
 import s3Client from "../../config/s3Client.js";
 import pdf from "pdf-parse";
 import { reviewCV } from "../../services/openAI_service.js";
+import Review from "../../models/Review.js";
+import Comment from "../../models/Comment.js";
 export const AIReview = async (req, res, next) => {
   try {
     const user = req.model;
@@ -32,8 +34,15 @@ export const AIReview = async (req, res, next) => {
         description: comment.comment,
       });
     }
+    const reviewModel = await Review.findByPk(7, {
+      attributes: { exclude: ["CV_ID"] },
+      include: [
+        { model: Comment, attributes: { exclude: ["review_ID"] } },
+        { model: CV, attributes: { exclude: ["key", "user_ID"] } },
+      ],
+    });
     successResponse(res, 200, "CV reviewed successfully.", {
-      comments: comments,
+      review: reviewModel,
     });
   } catch (error) {
     serverSideErrorResponse(res, error);
