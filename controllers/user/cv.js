@@ -33,6 +33,7 @@ export const postCV = async (req, res) => {
     );
     cv = await req.model.createCV({
       url: pdfLink,
+      key: cvName,
       coverImageUrlHigh: imageHighQualityLink,
       coverImageUrlLow: imageLowQualityLink,
     });

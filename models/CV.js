@@ -7,6 +7,11 @@ const CV = connection().define("CV", {
     autoIncrement: true,
     primaryKey: true,
   },
+  key: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
   url: {
     type: DataTypes.STRING,
     allowNull: false,
