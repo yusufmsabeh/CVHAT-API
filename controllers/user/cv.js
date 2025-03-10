@@ -6,6 +6,7 @@ import {
 import S3Client from "../../config/s3Client.js";
 import { pdf } from "pdf-to-img";
 import crypto from "crypto";
+import getCvResources from "../../resources/get_cv_resource.js";
 export const postCV = async (req, res) => {
   try {
     let cv = req.file;
@@ -37,13 +38,11 @@ export const postCV = async (req, res) => {
       coverImageUrlHigh: imageHighQualityLink,
       coverImageUrlLow: imageLowQualityLink,
     });
+    cv = cv.get({ plain: true });
+    delete cv.user_ID;
+    delete cv.key;
     successResponse(res, 200, "CV uploaded successfully", {
-      cv: {
-        ID: cv.ID,
-        URL: cv.url,
-        coverImageUrlHigh: cv.coverImageUrlHigh,
-        coverImageUrlLow: cv.coverImageUrlLow,
-      },
+      cv: cv,
     });
   } catch (error) {
     serverSideErrorResponse(res, error);
