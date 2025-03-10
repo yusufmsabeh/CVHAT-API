@@ -2,7 +2,7 @@ import { Router } from "express";
 import { AIReview } from "../../controllers/user/review.js";
 import { checkSchema } from "express-validator";
 import postReviewSchema from "../../validation/post_review_validation_schema.js";
-import validateRequest from "../../services/validate_request.js";
+import validateRequest from "../../middlewares/validate_request_middleware.js";
 import sessionMiddleware from "../../middlewares/session_middleware.js";
 const router = Router();
 router.use(sessionMiddleware);

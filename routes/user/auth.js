@@ -8,20 +8,15 @@ import { checkSchema } from "express-validator";
 import postSignupSchema from "../../validation/signup_validation_schema.js";
 import postLoginSchema from "../../validation/login_validation_schema.js";
 import sessionMiddleware from "../../middlewares/session_middleware.js";
-import validate_request from "../../services/validate_request.js";
+import validateRequest from "../../middlewares/validate_request_middleware.js";
 const router = new Router();
 router.post(
   "/signup",
   checkSchema(postSignupSchema),
-  validate_request,
+  validateRequest,
   postSignup,
 );
-router.post(
-  "/login",
-  checkSchema(postLoginSchema),
-  validate_request,
-  postLogin,
-);
+router.post("/login", checkSchema(postLoginSchema), validateRequest, postLogin);
 router.use(sessionMiddleware);
 router.post("/logout", postLogout);
 export default router;

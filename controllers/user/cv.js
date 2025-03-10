@@ -32,15 +32,15 @@ export const postCV = async (req, res) => {
     const imageLowQualityLink = encodeURI(
       `http://localhost.localstack.cloud:4566/${process.env.AWS_S3_BUCKET_NAME}/${userID}/${imageLowQualityName}`,
     );
-    cv = await req.model.createCV(
-      {
-        url: pdfLink,
-        key: cvName,
-        coverImageUrlHigh: imageHighQualityLink,
-        coverImageUrlLow: imageLowQualityLink,
-      },
-      { ...getCvResources },
-    );
+    cv = await req.model.createCV({
+      url: pdfLink,
+      key: cvName,
+      coverImageUrlHigh: imageHighQualityLink,
+      coverImageUrlLow: imageLowQualityLink,
+    });
+    cv = cv.get({ plain: true });
+    delete cv.user_ID;
+    delete cv.key;
     successResponse(res, 200, "CV uploaded successfully", {
       cv: cv,
     });
