@@ -5,7 +5,6 @@ import {
   unAuthorizedResponse,
 } from "../../services/response_handler.js";
 import bcrypt from "bcrypt";
-import validateRequest from "../../services/validate_request.js";
 import {
   getOrCreateSession,
   deleteSession,

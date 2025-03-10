@@ -6,6 +6,7 @@ import {
 import S3Client from "../../config/s3Client.js";
 import { pdf } from "pdf-to-img";
 import crypto from "crypto";
+import getCvResources from "../../resources/get_cv_resource.js";
 export const postCV = async (req, res) => {
   try {
     let cv = req.file;
@@ -31,19 +32,17 @@ export const postCV = async (req, res) => {
     const imageLowQualityLink = encodeURI(
       `http://localhost.localstack.cloud:4566/${process.env.AWS_S3_BUCKET_NAME}/${userID}/${imageLowQualityName}`,
     );
-    cv = await req.model.createCV({
-      url: pdfLink,
-      key: cvName,
-      coverImageUrlHigh: imageHighQualityLink,
-      coverImageUrlLow: imageLowQualityLink,
-    });
-    successResponse(res, 200, "CV uploaded successfully", {
-      cv: {
-        ID: cv.ID,
-        URL: cv.url,
-        coverImageUrlHigh: cv.coverImageUrlHigh,
-        coverImageUrlLow: cv.coverImageUrlLow,
+    cv = await req.model.createCV(
+      {
+        url: pdfLink,
+        key: cvName,
+        coverImageUrlHigh: imageHighQualityLink,
+        coverImageUrlLow: imageLowQualityLink,
       },
+      { ...getCvResources },
+    );
+    successResponse(res, 200, "CV uploaded successfully", {
+      cv: cv,
     });
   } catch (error) {
     serverSideErrorResponse(res, error);
