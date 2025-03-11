@@ -1,3 +1,3 @@
 export default {
-  attributes: { exclude: ["review_ID"] },
+  attributes: { exclude: ["review_ID", "createdAt", "updatedAt"] },
 };

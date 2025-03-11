@@ -8,7 +8,8 @@ import s3Client from "../../config/s3Client.js";
 import pdf from "pdf-parse";
 import { reviewCV } from "../../services/openAI_service.js";
 import Review from "../../models/Review.js";
-import getAIReviewResource from "../../resources/get_AI_review_resource.js";
+import getReviewResource from "../../resources/get_review_resource.js";
+import getReviewsResource from "../../resources/get_reviews_resource.js";
 export const AIReview = async (req, res, next) => {
   try {
     const user = req.model;
@@ -34,11 +35,45 @@ export const AIReview = async (req, res, next) => {
         description: comment.comment,
       });
     }
-    const reviewModel = await Review.findByPk(7, {
-      ...getAIReviewResource,
+    const reviewModel = await Review.findByPk(review.ID, {
+      ...getReviewResource,
     });
     successResponse(res, 200, "CV reviewed successfully.", {
       review: reviewModel,
+    });
+  } catch (error) {
+    serverSideErrorResponse(res, error);
+  }
+};
+export const getReviews = async (req, res, next) => {
+  try {
+    const user = req.model;
+    const filter = req.query.filter.toLowerCase();
+    const options = {};
+
+    if (filter === "recent") options.limit = 3;
+    if (filter === "ai") options.where = { isAI: true };
+    const reviews = await user.getReviews({
+      ...getReviewsResource,
+      ...options,
+    });
+    successResponse(res, 200, "Reviews retrieved successfully.", {
+      reviews: reviews,
+    });
+  } catch (error) {
+    serverSideErrorResponse(res, error);
+  }
+};
+export const getReviewByID = async (req, res, next) => {
+  try {
+    const user = req.model;
+    const reviewID = req.params.id;
+    const review = await user.getReviews({
+      where: { ID: reviewID },
+      ...getReviewResource,
+    });
+    successResponse(res, 200, "Review reviewed successfully.", {
+      review: review,
     });
   } catch (error) {
     serverSideErrorResponse(res, error);

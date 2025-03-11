@@ -1,10 +1,16 @@
 import { Router } from "express";
-import { AIReview } from "../../controllers/user/review.js";
+import {
+  AIReview,
+  getReviewByID,
+  getReviews,
+} from "../../controllers/user/review.js";
 import { checkSchema } from "express-validator";
 import postReviewSchema from "../../validation/post_review_validation_schema.js";
 import validateRequest from "../../middlewares/validate_request_middleware.js";
 import sessionMiddleware from "../../middlewares/session_middleware.js";
 const router = Router();
 router.use(sessionMiddleware);
+router.get("/", getReviews);
+router.get("/:id", getReviewByID);
 router.post("/ai", checkSchema(postReviewSchema), validateRequest, AIReview);
 export default router;

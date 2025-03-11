@@ -40,7 +40,7 @@ b. Remove unnecessary details that don’t add value.
 c. Tailor CV content towards what the employer wants to see rather than just listing personal accomplishments.
 
 CV:
-${cv}
+${cv.text}
 
 Task:
 Review the provided CV and generate structured feedback in JSON format, including specific suggestions on how to edit each section.
@@ -59,7 +59,7 @@ Output Format without formatting json (without \`\`\`json):
   ]
 }
 `;
-
+  console.log(prompt.toString());
   const response = await openai().chat.completions.create({
     model: process.env.OPENAI_MODEL,
     messages: [{ role: "user", content: prompt }],
