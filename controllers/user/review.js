@@ -10,6 +10,7 @@ import { reviewCV } from "../../services/openAI_service.js";
 import Review from "../../models/Review.js";
 import getReviewResource from "../../resources/get_review_resource.js";
 import getReviewsResource from "../../resources/get_reviews_resource.js";
+import { containerClient } from "../../config/azure_config.js";
 export const AIReview = async (req, res, next) => {
   try {
     const user = req.model;
@@ -21,13 +22,11 @@ export const AIReview = async (req, res, next) => {
       isAI: true,
       CV_ID: cv.ID,
     });
-    const cvObject = await s3Client
-      .getObject({
-        Bucket: process.env.AWS_S3_BUCKET_NAME,
-        Key: `${user.ID}/${cv.key}`,
-      })
-      .promise();
-    const pdfFile = await pdf(cvObject.Body);
+    const cvObject = await downloadCv(`${user.ID}/${cv.key}`);
+    console.log(cvObject);
+    const pdfFile = await pdf(cvObject);
+    console.log(pdfFile);
+
     const comments = (await reviewCV(pdfFile)).comments;
     for (const comment of comments) {
       await review.createComment({
@@ -78,4 +77,17 @@ export const getReviewByID = async (req, res, next) => {
   } catch (error) {
     serverSideErrorResponse(res, error);
   }
+};
+
+const downloadCv = async (cvName) => {
+  const blobClient = containerClient.getBlockBlobClient(cvName);
+  const stream = (await blobClient.download(0)).readableStreamBody;
+  return await streamToBuffer(stream);
+};
+const streamToBuffer = async (readableStream) => {
+  const chunks = [];
+  for await (const chunk of readableStream) {
+    chunks.push(chunk);
+  }
+  return Buffer.concat(chunks);
 };
