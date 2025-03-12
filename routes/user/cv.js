@@ -16,7 +16,7 @@ router.post(
   checkSchema(postCvSchema),
   validateRequestMiddleware,
   validateCV,
-  createBuketMiddleware,
+  // createBuketMiddleware,
   postCV,
 );
 export default router;

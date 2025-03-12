@@ -3,35 +3,51 @@ import {
   serverSideErrorResponse,
   successResponse,
 } from "../../services/response_handler.js";
-import S3Client from "../../config/s3Client.js";
 import { pdf } from "pdf-to-img";
 import crypto from "crypto";
-import getCvResources from "../../resources/get_cv_resource.js";
+import { containerClient } from "../../config/azure_config.js";
 export const postCV = async (req, res) => {
   try {
     let cv = req.file;
     const userID = req.model.ID;
     const cvName = `${userID}-${Date.now()}-${cv.originalname}.pdf`;
-    await uploadCVtoS3(cv, cvName, userID);
+    const folderName = crypto.randomUUID();
+    const pdfLink = await uploadToAzure(
+      cv.buffer,
+      cvName,
+      folderName,
+      "application/pdf",
+      cv.buffer.length,
+      userID,
+    );
+    // upload High Quality Image
     const imageHighQuality = await (
       await pdf(cv.buffer, { scale: 1 })
     ).getPage(1);
+    const imageHighQualityName = `${crypto.randomUUID()}.png`;
+    const imageHighQualityLink = await uploadToAzure(
+      imageHighQuality.buffer,
+      imageHighQualityName,
+      folderName,
+      "application/png",
+      imageHighQuality.buffer.byteLength,
+      userID,
+    );
+    // upload Low Quality Image
     const imageLowQuality = await (
       await pdf(cv.buffer, { scale: 0.3 })
     ).getPage(1);
-    const imageHighQualityName = `${crypto.randomUUID()}.png`;
     const imageLowQualityName = `${crypto.randomUUID()}.png`;
-    await uploadImageToS3(imageHighQuality, imageHighQualityName, userID);
-    await uploadImageToS3(imageLowQuality, imageLowQualityName, userID);
-    const pdfLink = encodeURI(
-      `http://localhost.localstack.cloud:4566/${process.env.AWS_S3_BUCKET_NAME}/${userID}/${cvName}`,
+    const imageLowQualityLink = await uploadToAzure(
+      imageLowQuality.buffer,
+      imageLowQualityName,
+      folderName,
+      "application/png",
+      imageLowQuality.buffer.byteLength,
+
+      userID,
     );
-    const imageHighQualityLink = encodeURI(
-      `http://localhost.localstack.cloud:4566/${process.env.AWS_S3_BUCKET_NAME}/${userID}/${imageHighQualityName}`,
-    );
-    const imageLowQualityLink = encodeURI(
-      `http://localhost.localstack.cloud:4566/${process.env.AWS_S3_BUCKET_NAME}/${userID}/${imageLowQualityName}`,
-    );
+
     cv = await req.model.createCV({
       url: pdfLink,
       key: cvName,
@@ -67,19 +83,21 @@ export const validateCV = async (req, res, next) => {
   }
 };
 
-async function uploadCVtoS3(cv, cvName, userID) {
-  await S3Client.putObject({
-    Bucket: `${process.env.AWS_S3_BUCKET_NAME}/${userID}`,
-    Key: cvName,
-    Body: cv.buffer,
-    ContentType: "application/pdf",
-  }).promise();
-}
-async function uploadImageToS3(image, imageName, userID) {
-  await S3Client.putObject({
-    Bucket: `${process.env.AWS_S3_BUCKET_NAME}/${userID}`,
-    Key: imageName,
-    Body: image,
-    ContentType: "application/png",
-  }).promise();
+async function uploadToAzure(
+  file,
+  fileName,
+  folderName,
+  fileType,
+  fileLength,
+  userID,
+) {
+  const blockBlobClient = containerClient.getBlockBlobClient(
+    `${userID}/${folderName}/${fileName}`,
+  );
+  await blockBlobClient.upload(file, fileLength, {
+    blobHTTPHeaders: {
+      blobContentType: fileType,
+    },
+  });
+  return blockBlobClient.url;
 }
