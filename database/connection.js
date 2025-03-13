@@ -12,7 +12,7 @@ function getConnection() {
       database: process.env.DB_NAME,
       port: process.env.DB_PORT,
       ssl: {
-        rejectUnauthorized: true,
+        rejectUnauthorized: false,
       },
       define: {
         timestamps: true,
