@@ -22,7 +22,7 @@ checkAzureConnection().then(() => {
     .authenticate()
     .then(() => {
       connection()
-        .sync({ force: true })
+        .sync()
         .then(() => {
           app.listen(PORT, HOST, () => {
             console.log("Server is running on port", PORT, " host: ", HOST);
