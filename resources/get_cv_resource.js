@@ -1,3 +1,3 @@
 export default {
-  attributes: { exclude: ["user_ID", "key", "updatedAt"] },
+  attributes: { exclude: ["user_ID", "key", "updatedAt", "folderName"] },
 };

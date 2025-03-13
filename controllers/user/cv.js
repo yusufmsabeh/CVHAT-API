@@ -51,6 +51,7 @@ export const postCV = async (req, res) => {
     cv = await req.model.createCV({
       url: pdfLink,
       key: cvName,
+      folderName: folderName,
       title: req.body.title,
       fileName: cv.originalname,
       coverImageUrlHigh: imageHighQualityLink,
@@ -59,6 +60,7 @@ export const postCV = async (req, res) => {
     cv = cv.get({ plain: true });
     delete cv.user_ID;
     delete cv.key;
+    delete cv.folderName;
     successResponse(res, 200, "CV uploaded successfully", {
       cv: cv,
     });

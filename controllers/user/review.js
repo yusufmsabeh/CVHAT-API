@@ -22,10 +22,8 @@ export const AIReview = async (req, res, next) => {
       isAI: true,
       CV_ID: cv.ID,
     });
-    const cvObject = await downloadCv(`${user.ID}/${cv.key}`);
-    console.log(cvObject);
+    const cvObject = await downloadCv(`${user.ID}/${cv.folderName}/${cv.key}`);
     const pdfFile = await pdf(cvObject);
-    console.log(pdfFile);
 
     const comments = (await reviewCV(pdfFile)).comments;
     for (const comment of comments) {
@@ -47,7 +45,7 @@ export const AIReview = async (req, res, next) => {
 export const getReviews = async (req, res, next) => {
   try {
     const user = req.model;
-    const filter = req.query.filter.toLowerCase();
+    const filter = (req.query.filter || "").toLowerCase();
     const options = {};
 
     if (filter === "recent") options.limit = 3;
