@@ -11,8 +11,11 @@ function getConnection() {
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       port: process.env.DB_PORT,
-      ssl: {
-        rejectUnauthorized: false,
+      dialectOptions: {
+        ssl: {
+          ssl: true,
+          rejectUnauthorized: false,
+        },
       },
       define: {
         timestamps: true,
