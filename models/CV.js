@@ -20,6 +20,10 @@ const CV = connection().define("CV", {
     allowNull: false,
     unique: true,
   },
+  folderName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   url: {
     type: DataTypes.STRING,
     allowNull: false,
