@@ -17,6 +17,6 @@ router.post(
   postSignup,
 );
 router.post("/login", checkSchema(postLoginSchema), validateRequest, postLogin);
-router.use(sessionMiddleware);
+// router.use(sessionMiddleware);
 router.post("/logout", postLogout);
 export default router;
