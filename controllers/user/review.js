@@ -4,7 +4,6 @@ import {
   successResponse,
 } from "../../services/response_handler.js";
 import CV from "../../models/CV.js";
-import s3Client from "../../config/s3Client.js";
 import pdf from "pdf-parse";
 import { reviewCV } from "../../services/openAI_service.js";
 import Review from "../../models/Review.js";
@@ -96,6 +95,28 @@ export const getReviewsCount = async (req, res, next) => {
       aiReviewCount: AIReviewCount,
       recruiterReviewCount: recruiterReviewCount,
     });
+  } catch (error) {
+    serverSideErrorResponse(res, error);
+  }
+};
+export const postToggleFavorites = async (req, res, next) => {
+  try {
+    const user = req.model;
+    const reviewID = req.params.id;
+    const review = (
+      await user.getReviews({
+        where: {
+          ID: reviewID,
+        },
+      })
+    )[0];
+    if (!review) return errorResponse(res, 404, "No review found");
+    review.isFavorite = !review.isFavorite;
+    await review.save();
+    const message = review.isFavorite
+      ? "Added to Favorites"
+      : "Removed from Favorites";
+    successResponse(res, 200, message, { review });
   } catch (error) {
     serverSideErrorResponse(res, error);
   }

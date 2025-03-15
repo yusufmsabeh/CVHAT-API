@@ -13,6 +13,10 @@ const Review = connection().define("Review", {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
+  isFavorite: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
 });
 
 export default Review;
