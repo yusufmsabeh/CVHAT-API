@@ -11,6 +11,7 @@ import Review from "../../models/Review.js";
 import getReviewResource from "../../resources/get_review_resource.js";
 import getReviewsResource from "../../resources/get_reviews_resource.js";
 import { containerClient } from "../../config/azure_config.js";
+
 export const AIReview = async (req, res, next) => {
   try {
     const user = req.model;
@@ -71,6 +72,29 @@ export const getReviewByID = async (req, res, next) => {
     });
     successResponse(res, 200, "Review reviewed successfully.", {
       review: review,
+    });
+  } catch (error) {
+    serverSideErrorResponse(res, error);
+  }
+};
+
+export const getReviewsCount = async (req, res, next) => {
+  try {
+    const user = req.model;
+    const recruiterReviewCount = await user.countReviews({
+      where: {
+        isAI: false,
+      },
+    });
+
+    const AIReviewCount = await user.countReviews({
+      where: {
+        isAI: true,
+      },
+    });
+    successResponse(res, 200, "Review counts retrieved successfully.", {
+      aiReviewCount: AIReviewCount,
+      recruiterReviewCount: recruiterReviewCount,
     });
   } catch (error) {
     serverSideErrorResponse(res, error);
