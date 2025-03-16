@@ -30,7 +30,14 @@ export const postCV = async (req, res) => {
       content: content.text,
       fileName: cv.originalname,
     });
-    successResponse(res, 200, "CV uploaded Successfully", { cvModel });
+    successResponse(res, 200, "CV uploaded Successfully", {
+      cv: {
+        ID: cvModel.ID,
+        url: cvModel.url,
+        fileName: cvModel.fileName,
+        createdAt: cvModel.createdAt,
+      },
+    });
     // upload High Quality Image
     const imageHighQuality = await (
       await pdf(cv.buffer, { scale: 1 })

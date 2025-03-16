@@ -67,10 +67,12 @@ export const getReviewByID = async (req, res, next) => {
   try {
     const user = req.model;
     const reviewID = req.params.id;
-    const review = await user.getReviews({
-      where: { ID: reviewID },
-      ...getReviewResource,
-    });
+    const review = (
+      await user.getReviews({
+        where: { ID: reviewID },
+        ...getReviewResource,
+      })
+    )[0];
     successResponse(res, 200, "Review reviewed successfully.", {
       review: review,
     });

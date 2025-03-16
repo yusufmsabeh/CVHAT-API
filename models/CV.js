@@ -1,5 +1,6 @@
 import connection from "../database/connection.js";
 import { DataTypes } from "sequelize";
+import { format, parseISO } from "date-fns";
 
 const CV = connection().define("CV", {
   ID: {
@@ -41,6 +42,13 @@ const CV = connection().define("CV", {
     type: DataTypes.STRING,
     allowNull: true,
     field: "cover_image_url_low",
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    get() {
+      const parsedDate = parseISO(this.dataValues.createdAt.toISOString());
+      return format(parsedDate, "dd MMM yyyy");
+    },
   },
 });
 
