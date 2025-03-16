@@ -14,18 +14,20 @@ import { containerClient } from "../../config/azure_config.js";
 export const AIReview = async (req, res, next) => {
   try {
     const user = req.model;
-    const hasCV = await user.hasCV(req.body.cv);
-    if (!hasCV) return errorResponse(res, 404, "No CV found");
+    const cv = (
+      await user.getCVs({
+        where: {
+          ID: req.body.cv,
+        },
+      })
+    )[0];
+    if (!cv) return errorResponse(res, 404, "No CV found");
 
-    const cv = await CV.findByPk(req.body.cv);
     const review = await user.createReview({
       isAI: true,
       CV_ID: cv.ID,
     });
-    const cvObject = await downloadCv(`${user.ID}/${cv.folderName}/${cv.key}`);
-    const pdfFile = await pdf(cvObject);
-
-    const comments = (await reviewCV(pdfFile)).comments;
+    const comments = (await reviewCV(cv.content)).comments;
     for (const comment of comments) {
       await review.createComment({
         title: comment.title,
