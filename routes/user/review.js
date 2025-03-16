@@ -5,6 +5,7 @@ import {
   getReviews,
   getReviewsCount,
   postToggleFavorites,
+  getFavorites,
 } from "../../controllers/user/review.js";
 import { checkSchema } from "express-validator";
 import postReviewSchema from "../../validation/post_review_validation_schema.js";
@@ -15,6 +16,7 @@ router.use(sessionMiddleware);
 router.get("/", getReviews);
 router.get("/count", getReviewsCount);
 router.post("/toggle-favorites/:id", postToggleFavorites);
+router.get("/favorites", getFavorites);
 router.get("/:id", getReviewByID);
 router.post("/ai", checkSchema(postReviewSchema), validateRequest, AIReview);
 export default router;

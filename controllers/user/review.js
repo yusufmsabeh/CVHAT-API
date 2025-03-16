@@ -108,15 +108,34 @@ export const postToggleFavorites = async (req, res, next) => {
         where: {
           ID: reviewID,
         },
+        ...getReviewsResource,
       })
     )[0];
     if (!review) return errorResponse(res, 404, "No review found");
     review.isFavorite = !review.isFavorite;
     await review.save();
+    delete review.dataValues.updatedAt;
     const message = review.isFavorite
       ? "Added to Favorites"
       : "Removed from Favorites";
     successResponse(res, 200, message, { review });
+  } catch (error) {
+    serverSideErrorResponse(res, error);
+  }
+};
+
+export const getFavorites = async (req, res, next) => {
+  try {
+    const user = req.model;
+    const reviews = await user.getReviews({
+      where: {
+        isFavorite: true,
+      },
+      ...getReviewsResource,
+    });
+    successResponse(res, 200, "Favorites retrieved successfully.", {
+      reviews: reviews,
+    });
   } catch (error) {
     serverSideErrorResponse(res, error);
   }
