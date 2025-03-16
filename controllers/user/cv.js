@@ -4,6 +4,7 @@ import {
   successResponse,
 } from "../../services/response_handler.js";
 import { pdf } from "pdf-to-img";
+import pdfParse from "pdf-parse";
 import crypto from "crypto";
 import { containerClient } from "../../config/azure_config.js";
 export const postCV = async (req, res) => {
@@ -20,6 +21,16 @@ export const postCV = async (req, res) => {
       cv.buffer.length,
       userID,
     );
+    const content = await pdfParse(cv.buffer);
+    const cvModel = await req.model.createCV({
+      url: pdfLink,
+      key: cvName,
+      folderName: folderName,
+      title: req.body.title,
+      content: content.text,
+      fileName: cv.originalname,
+    });
+    successResponse(res, 200, "CV uploaded Successfully", { cvModel });
     // upload High Quality Image
     const imageHighQuality = await (
       await pdf(cv.buffer, { scale: 1 })
@@ -47,23 +58,9 @@ export const postCV = async (req, res) => {
 
       userID,
     );
-
-    cv = await req.model.createCV({
-      url: pdfLink,
-      key: cvName,
-      folderName: folderName,
-      title: req.body.title,
-      fileName: cv.originalname,
-      coverImageUrlHigh: imageHighQualityLink,
-      coverImageUrlLow: imageLowQualityLink,
-    });
-    cv = cv.get({ plain: true });
-    delete cv.user_ID;
-    delete cv.key;
-    delete cv.folderName;
-    successResponse(res, 200, "CV uploaded successfully", {
-      cv: cv,
-    });
+    cvModel.coverImageUrlLow = imageLowQualityLink;
+    cvModel.coverImageUrlHigh = imageHighQualityLink;
+    await cvModel.save();
   } catch (error) {
     serverSideErrorResponse(res, error);
   }

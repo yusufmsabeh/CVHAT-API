@@ -40,7 +40,7 @@ b. Remove unnecessary details that don’t add value.
 c. Tailor CV content towards what the employer wants to see rather than just listing personal accomplishments.
 
 CV:
-${cv.text}
+${cv}
 
 Task:
 Review the provided CV and generate structured feedback in JSON format, including specific suggestions on how to edit each section.

@@ -11,6 +11,10 @@ const CV = connection().define("CV", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  content: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
   fileName: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -30,12 +34,12 @@ const CV = connection().define("CV", {
   },
   coverImageUrlHigh: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
     field: "cover_image_url_high",
   },
   coverImageUrlLow: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
     field: "cover_image_url_low",
   },
 });

@@ -21,7 +21,7 @@ function getConnection() {
         timestamps: true,
         freezeTableName: true,
       },
-      logging: false,
+      logging: true,
     });
   }
   return connection;
