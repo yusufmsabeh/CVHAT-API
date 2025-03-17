@@ -6,12 +6,16 @@ import {
 import { pdf } from "pdf-to-img";
 import pdfParse from "pdf-parse";
 import crypto from "crypto";
-import { containerClient } from "../../config/azure_config.js";
+import validateFile from "../../services/validate_file.js";
+import { uploadToAzure } from "../../helpers/azure.js";
 export const postCV = async (req, res) => {
   try {
     let cv = req.file;
     const userID = req.model.ID;
-    const cvName = `${userID}-${Date.now()}-${cv.originalname}.pdf`;
+    const fileValidationRequest = validateFile(cv, ["application/pdf"]);
+    if (!fileValidationRequest.status)
+      return errorResponse(res, 400, fileValidationRequest.message);
+    const cvName = `${userID}-${Date.now()}-cv`;
     const folderName = crypto.randomUUID();
     const pdfLink = await uploadToAzure(
       cv.buffer,
@@ -42,12 +46,12 @@ export const postCV = async (req, res) => {
     const imageHighQuality = await (
       await pdf(cv.buffer, { scale: 1 })
     ).getPage(1);
-    const imageHighQualityName = `${crypto.randomUUID()}.png`;
+    const imageHighQualityName = `${crypto.randomUUID()}-high-cover`;
     const imageHighQualityLink = await uploadToAzure(
       imageHighQuality.buffer,
       imageHighQualityName,
       folderName,
-      "application/png",
+      "image/png",
       imageHighQuality.buffer.byteLength,
       userID,
     );
@@ -55,12 +59,12 @@ export const postCV = async (req, res) => {
     const imageLowQuality = await (
       await pdf(cv.buffer, { scale: 0.3 })
     ).getPage(1);
-    const imageLowQualityName = `${crypto.randomUUID()}.png`;
+    const imageLowQualityName = `${crypto.randomUUID()}-low-cover`;
     const imageLowQualityLink = await uploadToAzure(
       imageLowQuality.buffer,
       imageLowQualityName,
       folderName,
-      "application/png",
+      "image/png",
       imageLowQuality.buffer.byteLength,
 
       userID,
@@ -72,38 +76,3 @@ export const postCV = async (req, res) => {
     serverSideErrorResponse(res, error);
   }
 };
-
-export const validateCV = async (req, res, next) => {
-  try {
-    const cv = req.file;
-    if (!cv) return errorResponse(res, 400, "CV file is required");
-
-    let { mimetype } = cv;
-    if (mimetype !== "application/pdf") {
-      return errorResponse(res, 400, "Invalid file type");
-    }
-
-    next();
-  } catch (error) {
-    serverSideErrorResponse(res, error);
-  }
-};
-
-async function uploadToAzure(
-  file,
-  fileName,
-  folderName,
-  fileType,
-  fileLength,
-  userID,
-) {
-  const blockBlobClient = containerClient.getBlockBlobClient(
-    `${userID}/${folderName}/${fileName}`,
-  );
-  await blockBlobClient.upload(file, fileLength, {
-    blobHTTPHeaders: {
-      blobContentType: fileType,
-    },
-  });
-  return blockBlobClient.url;
-}
