@@ -14,6 +14,7 @@ import { containerClient } from "../../config/azure_config.js";
 export const AIReview = async (req, res, next) => {
   try {
     const user = req.model;
+    const title = req.body.title;
     const cv = (
       await user.getCVs({
         where: {
@@ -25,6 +26,7 @@ export const AIReview = async (req, res, next) => {
 
     const review = await user.createReview({
       isAI: true,
+      title: title,
       CV_ID: cv.ID,
     });
     const comments = (await reviewCV(cv.content)).comments;

@@ -1,11 +1,11 @@
 import CV from "../models/CV.js";
 
 export default {
-  attributes: ["ID", "isAI", "isFavorite", "createdAt"],
+  attributes: ["ID", "title", "isAI", "isFavorite", "createdAt"],
   include: [
     {
       model: CV,
-      attributes: ["title", "coverImageUrlLow", "fileName"],
+      attributes: ["coverImageUrlLow", "fileName"],
     },
   ],
 };
