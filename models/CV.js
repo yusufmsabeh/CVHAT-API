@@ -8,10 +8,6 @@ const CV = connection().define("CV", {
     autoIncrement: true,
     primaryKey: true,
   },
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
   content: {
     type: DataTypes.TEXT,
     allowNull: false,
