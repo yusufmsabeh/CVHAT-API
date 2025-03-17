@@ -24,6 +24,11 @@ const User = connection().define("User", {
     unique: true,
     field: "email",
   },
+  avatarURL: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    field: "avatar_url",
+  },
   password: {
     type: DataTypes.STRING,
     allowNull: false,
