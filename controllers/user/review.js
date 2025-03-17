@@ -50,7 +50,10 @@ export const getReviews = async (req, res, next) => {
     const filter = (req.query.filter || "").toLowerCase();
     const options = {};
 
-    if (filter === "recent") options.limit = 3;
+    if (filter === "recent") {
+      options.limit = 3;
+      options.order = [["createdAt", "DESC"]];
+    }
     if (filter === "ai") options.where = { isAI: true };
     const reviews = await user.getReviews({
       ...getReviewsResource,
