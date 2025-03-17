@@ -1,7 +1,10 @@
 import {
+  errorResponse,
   serverSideErrorResponse,
   successResponse,
 } from "../../services/response_handler.js";
+import bcrypt from "bcrypt";
+import { deleteSession } from "../../services/sessions_managment.js";
 
 export const getProfile = async (req, res) => {
   try {
@@ -34,6 +37,27 @@ export const postProfile = async (req, res) => {
       },
     });
   } catch (error) {
-    serverSideErrorResponse(res, 500, error);
+    serverSideErrorResponse(res, error);
+  }
+};
+export const postPassword = async (req, res) => {
+  try {
+    const user = req.model;
+    const { oldPassword, newPassword } = req.body;
+    if (!bcrypt.compareSync(oldPassword, user.password))
+      return errorResponse(res, 401, "wrong password");
+    const hashedPassword = bcrypt.hashSync(newPassword, 10);
+    user.set({
+      password: hashedPassword,
+    });
+    await user.save();
+    await deleteSession(user.ID);
+    successResponse(
+      res,
+      200,
+      "Your password has been updated successfully. Please log in again to continue.",
+    );
+  } catch (error) {
+    serverSideErrorResponse(res, error);
   }
 };
