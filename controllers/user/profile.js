@@ -76,7 +76,7 @@ export const postAvatar = async (req, res) => {
     if (!fileValidationRequest.status)
       return errorResponse(res, 400, fileValidationRequest.message);
     const avatarName = `${user.ID}-avatar`;
-    const avatarURL = await uploadToAzure(
+    user.avatarURL = await uploadToAzure(
       avatar.buffer,
       avatarName,
       "avatar",
@@ -84,7 +84,6 @@ export const postAvatar = async (req, res) => {
       avatar.buffer.length,
       user.ID,
     );
-    user.avatarURL = avatarURL;
     await user.save();
     successResponse(res, 200, "Avatar updated successfully", {
       profile: {
