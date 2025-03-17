@@ -30,7 +30,6 @@ export const postCV = async (req, res) => {
       url: pdfLink,
       key: cvName,
       folderName: folderName,
-      title: req.body.title,
       content: content.text,
       fileName: cv.originalname,
     });

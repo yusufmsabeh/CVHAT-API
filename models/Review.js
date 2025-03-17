@@ -8,6 +8,10 @@ const Review = connection().define("Review", {
     autoIncrement: true,
     primaryKey: true,
   },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   isAI: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
