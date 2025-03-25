@@ -43,6 +43,7 @@ export const postLogin = async (req, res) => {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
+      avatarURL: user.avatarURL,
       token: token,
     });
   } catch (error) {

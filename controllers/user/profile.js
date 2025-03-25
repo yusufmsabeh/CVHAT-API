@@ -16,6 +16,7 @@ export const getProfile = async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
+        avatarURL: user.avatarURL,
       },
     });
   } catch (error) {
@@ -36,6 +37,7 @@ export const postProfile = async (req, res) => {
         firstName: updateUser.firstName,
         lastName: updateUser.lastName,
         email: updateUser.email,
+        avatarURL: user.avatarURL,
       },
     });
   } catch (error) {
