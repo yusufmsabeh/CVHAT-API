@@ -1,4 +1,5 @@
 import { BlobServiceClient } from "@azure/storage-blob";
+import { EmailClient } from "@azure/communication-email";
 
 const blobServiceClient = BlobServiceClient.fromConnectionString(
   process.env.AZURE_STORAGE_ACCOUNT_CONNECTION_STRING,
@@ -6,6 +7,11 @@ const blobServiceClient = BlobServiceClient.fromConnectionString(
 export const containerClient = blobServiceClient.getContainerClient(
   process.env.AZURE_STORAGE_CONTAINER_NAME,
 );
+
+export const emailClient = new EmailClient(
+  process.env.AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING,
+);
+
 export async function checkAzureConnection() {
   try {
     const createContainerResponse = await containerClient.create();

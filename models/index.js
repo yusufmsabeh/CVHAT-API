@@ -3,7 +3,6 @@ import CV from "./CV.js";
 import Recruiter from "./Recruiter.js";
 import Review from "./Review.js";
 import Comment from "./Comment.js";
-import Session from "./Session.js";
 
 console.log("===========", "defining relations", "=============");
 // Establishing relations
