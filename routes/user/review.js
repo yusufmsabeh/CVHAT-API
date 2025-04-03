@@ -12,11 +12,16 @@ import postReviewSchema from "../../validation/post_review_validation_schema.js"
 import validateRequest from "../../middlewares/validate_request_middleware.js";
 import sessionMiddleware from "../../middlewares/session_middleware.js";
 const router = Router();
-router.use(sessionMiddleware);
-router.get("/", getReviews);
-router.get("/count", getReviewsCount);
-router.post("/toggle-favorites/:id", postToggleFavorites);
-router.get("/favorites", getFavorites);
-router.get("/:id", getReviewByID);
-router.post("/ai", checkSchema(postReviewSchema), validateRequest, AIReview);
+router.get("/", sessionMiddleware, getReviews);
+router.get("/count", sessionMiddleware, getReviewsCount);
+router.post("/toggle-favorites/:id", sessionMiddleware, postToggleFavorites);
+router.get("/favorites", sessionMiddleware, getFavorites);
+router.get("/:id", sessionMiddleware, getReviewByID);
+router.post(
+  "/ai",
+  sessionMiddleware,
+  checkSchema(postReviewSchema),
+  validateRequest,
+  AIReview,
+);
 export default router;
