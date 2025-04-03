@@ -13,20 +13,22 @@ import updatePasswordSchema from "../../validation/update_password_validation_sc
 import multer from "multer";
 import multerConfig from "../../config/multer_config.js";
 const router = new Router();
-router.use(sessionMiddleware);
-router.get("/", getProfile);
+
+router.get("/", sessionMiddleware, getProfile);
 router.post(
   "/",
+  sessionMiddleware,
   checkSchema(updateProfileSchema),
   validateRequest,
   postProfile,
 );
 router.post(
   "/password",
+  sessionMiddleware,
   checkSchema(updatePasswordSchema),
   validateRequest,
   postPassword,
 );
 const upload = multer(multerConfig);
-router.post("/avatar", upload.single("avatar"), postAvatar);
+router.post("/avatar", sessionMiddleware, upload.single("avatar"), postAvatar);
 export default router;

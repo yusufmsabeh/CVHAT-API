@@ -43,6 +43,5 @@ router.post(
   validateRequest,
   postResetPassword,
 );
-router.use(sessionMiddleware);
-router.post("/logout", postLogout);
+router.post("/logout", sessionMiddleware, postLogout);
 export default router;
