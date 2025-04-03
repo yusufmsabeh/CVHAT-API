@@ -21,7 +21,7 @@ function getConnection() {
         timestamps: true,
         freezeTableName: true,
       },
-      logging: true,
+      logging: process.env.DB_LOGGING === "true",
     });
   }
   return connection;
