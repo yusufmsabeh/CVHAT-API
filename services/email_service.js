@@ -61,8 +61,6 @@ export const sendOTPEmail = async (OTP, email) => {
       to: [{ address: email }],
     },
   };
-  const poller = await emailClient.beginSend(emailMessage,{
-    updateIntervalInMs:500
-  });
+  const poller = await emailClient.beginSend(emailMessage);
   const result = await poller.pollUntilDone();
 };
