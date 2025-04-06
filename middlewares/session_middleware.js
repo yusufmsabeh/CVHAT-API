@@ -22,7 +22,12 @@ export default async (req, res, next) => {
         401,
         "Not authorized, please try to login",
       );
-
+      const now = new Date();
+      const expiresAt = new Date(session.expiresAt);
+        if (now > expiresAt) {
+        await session.destroy();
+        return errorResponse(res, 403, "Token expired");
+      }
     const user = await model.findByPk(session.user_id);
     if (!user)
       return unAuthorizedResponse(

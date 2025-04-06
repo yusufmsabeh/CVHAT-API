@@ -15,6 +15,10 @@ const Session = connection().define("Session", {
     required: true,
     primaryKey: true,
   },
+  expiresAt: {
+    type: DataTypes.DATE,
+    defaultValue: () => new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+  },
 });
 
 export default Session;
