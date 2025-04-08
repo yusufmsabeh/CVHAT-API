@@ -14,7 +14,8 @@ import sessionMiddleware from "../../middlewares/session_middleware.js";
 import validateRequest from "../../middlewares/validate_request_middleware.js";
 import sendOTPSchema from "../../validation/send_otp_schema.js";
 import verifyOTPSchema from "../../validation/verify_otp_schema.js";
-import resetPasswordMiddleware from "../../middlewares/reset_password_middleware.js";
+import ResetPassword from "../../models/ResetPasswordToken.js"
+import Session from "../../models/Session.js"
 import resetPasswordValidationSchema from "../../validation/reset_password_validation_schema.js";
 const router = new Router();
 router.post(
@@ -38,10 +39,10 @@ router.post(
 );
 router.post(
   "/reset-password",
-  resetPasswordMiddleware,
+  sessionMiddleware(ResetPassword),
   checkSchema(resetPasswordValidationSchema),
   validateRequest,
   postResetPassword,
 );
-router.post("/logout", sessionMiddleware, postLogout);
+router.post("/logout", sessionMiddleware(Session), postLogout);
 export default router;

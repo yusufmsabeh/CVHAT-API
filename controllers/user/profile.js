@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 import { deleteSession } from "../../services/sessions_managment.js";
 import { uploadToAzure } from "../../helpers/azure.js";
 import validateFile from "../../services/validate_file.js";
+import Session from "../../models/Session.js"
 
 export const getProfile = async (req, res) => {
   try {
@@ -55,7 +56,7 @@ export const postPassword = async (req, res) => {
       password: hashedPassword,
     });
     await user.save();
-    await deleteSession(user.ID);
+    await deleteSession(Session, user.ID);
     successResponse(
       res,
       200,

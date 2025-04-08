@@ -12,11 +12,9 @@ import {
 import User from "../../models/User.js";
 import otpGenerator from "otp-generator";
 import OTP from "../../models/OTP.js";
+import Session from "../../models/Session.js";
+import ResetPasswordToken from "../../models/ResetPasswordToken.js";
 import { sendOTPEmail } from "../../services/email_service.js";
-import {
-  createResetPasswordToken,
-  deleteResetPasswordToken,
-} from "../../services/reset_password_tokens_managment.js";
 
 export const postSignup = async (req, res) => {
   try {
@@ -46,7 +44,7 @@ export const postLogin = async (req, res) => {
     if (!user) return unAuthorizedResponse(res, 401, "Wrong email or password");
     if (!bcrypt.compareSync(password, user.password))
       return unAuthorizedResponse(res, 401, "Wrong email or password");
-    const token = await getOrCreateSession(user.ID);
+    const token = await getOrCreateSession(Session, user.ID);
     successResponse(res, 200, "Logged in successfully", {
       firstName: user.firstName,
       lastName: user.lastName,
@@ -61,7 +59,7 @@ export const postLogin = async (req, res) => {
 
 export const postLogout = async (req, res) => {
   try {
-    await deleteSession(req.model.ID);
+    await deleteSession(Session,req.model.ID);
     successResponse(res, 200, "Logged out successfully");
   } catch (error) {
     serverSideErrorResponse(res, error);
@@ -117,7 +115,7 @@ export const postVerifyOTP = async (req, res) => {
       await otpModel.destroy();
       return errorResponse(res, 403, "OTP expired");
     }
-    const resetPasswordToken = await createResetPasswordToken(user.ID);
+    const resetPasswordToken = await getOrCreateSession(ResetPasswordToken,user.ID);
     await otpModel.destroy();
     successResponse(res, 200, "OTP Verified", {
       token: resetPasswordToken,
@@ -135,7 +133,7 @@ export const postResetPassword = async (req, res) => {
       password: hashedPassword,
     });
     await user.save();
-    await deleteResetPasswordToken(user.ID);
+    await deleteSession(ResetPasswordToken,user.ID);
     successResponse(res, 200, "Your password has been changed successfully");
   } catch (error) {
     serverSideErrorResponse(res, error);

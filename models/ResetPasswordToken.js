@@ -4,12 +4,13 @@ import { DataTypes } from "sequelize";
 const RestPasswordToken = connection().define(
   "RestPasswordToken",
   {
-    token_id: {
+    token: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
       required: true,
       primaryKey: true,
+      field:"token_id"
     },
     user_id: {
       type: DataTypes.INTEGER,

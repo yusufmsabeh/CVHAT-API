@@ -1,19 +1,18 @@
-import Session from "../models/Session.js";
 import crypto from "crypto";
-export const getOrCreateSession = async (userId) => {
-  let session = await Session.findOne({
+export const getOrCreateSession = async (sessionModel,userId) => {
+  let session = await sessionModel.findOne({
     where: {
       user_id: userId,
     },
   });
-  if (session) return session.session_id;
-  session = await Session.create({
+  if (session) return session.token;
+  session = await sessionModel.create({
     user_id: userId,
-    session_id: crypto.randomBytes(16).toString("hex"),
+    token: crypto.randomBytes(16).toString("hex"),
   });
-  return session.session_id;
+  return session.token;
 };
 
-export const deleteSession = async (userId) => {
-  await Session.destroy({ where: { user_id: userId } });
+export const deleteSession = async (sessionModel,userId) => {
+  await sessionModel.destroy({ where: { user_id: userId } });
 };
