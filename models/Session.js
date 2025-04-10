@@ -14,7 +14,7 @@ const Session = connection().define("Session", {
     allowNull: false,
     required: true,
     primaryKey: true,
-  },
+  }
 });
 
 export default Session;

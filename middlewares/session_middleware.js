@@ -22,7 +22,6 @@ export default async (req, res, next) => {
         401,
         "Not authorized, please try to login",
       );
-
     const user = await model.findByPk(session.user_id);
     if (!user)
       return unAuthorizedResponse(
