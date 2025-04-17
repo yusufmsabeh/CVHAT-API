@@ -33,6 +33,7 @@ export const postCV = async (req, res) => {
       content: content.text,
       fileName: cv.originalname,
     });
+    req.file=null;
     successResponse(res, 200, "CV uploaded Successfully", {
       cv: {
         ID: cvModel.ID,
