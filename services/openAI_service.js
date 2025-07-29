@@ -48,8 +48,8 @@ Task:
 Review the provided CV and generate structured feedback in JSON format, including specific suggestions on how to edit each section. Only include comments where improvements are needed.
 
 CV:
-${cv.text}
-
+${cv}
+-----
 Output Format without formatting json (without \`\`\`json):
 {
   "comments": [
