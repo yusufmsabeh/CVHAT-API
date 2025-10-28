@@ -19,7 +19,7 @@ export async function checkAzureConnection() {
       `Container was created successfully.\n\trequestId:${createContainerResponse.requestId}\n\tURL: ${containerClient.url}`,
     );
   } catch (error) {
-    if (error.code !== "ContainerAlreadyExists") throw error;
+    if (error.code !== "ContainerAlreadyExists") console.log(error);
     console.log(
       `Container was created successfully.\n\tURL: ${containerClient.url}`,
     );
